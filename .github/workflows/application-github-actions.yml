@@ -1,23 +1,16 @@
 name: application-github-actions
+
 on: [push]
+
 jobs:
-  build:
+  versioning:
+    name: Versioning
     runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Set up JDK 1.11
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.11
-      - name: Check java version
-        run: java -version
-      - name: Check gradle version
-        run: gradle -version
-      - name: Build with Gradle
-        run: ./gradlew build
       - name: generate version
         id: generate_version
         uses: paulhatch/semantic-version@v3.1.2
@@ -40,12 +33,45 @@ jobs:
           echo ${{join(steps.generate_version.outputs.*, '\n')}}
           echo "version_tag = ${{ steps.generate_version.outputs.version_tag }}"
           echo "version = ${{ steps.generate_version.outputs.version }}"
+          echo ${{ steps.generate_version.outputs.version_tag }} > .version.txt
+      - name: Upload version
+        uses: actions/upload-artifact@v2
+        with:
+          name: version
+          path: .version.txt
+
+  build:
+    name: Build
+    needs: versioning
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Download version
+        uses: actions/download-artifact@v2
+        with:
+          name: version
+      - name: Get version
+        id: get_version
+        run: |
+          value=`cat .version.txt`
+          echo "::set-output name=VERSION::$value"      
+      - run: | 
+          echo "version = ${{ steps.get_version.outputs.VERSION }}"  
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      - name: Build with Gradle
+        run: ./gradlew build
       - name: Tag version
         uses: tvdias/github-tagger@v0.0.1
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          tag: "${{ steps.generate_version.outputs.version_tag }}"
+          tag: "${{ steps.get_version.outputs.VERSION }}"
       - uses: actions/upload-artifact@v2
         with:
-          name: Package
+          name: playing-with-actions-app.${{ steps.get_version.outputs.version }}
           path: app/build/libs
