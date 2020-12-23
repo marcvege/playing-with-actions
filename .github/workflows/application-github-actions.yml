@@ -33,7 +33,7 @@ jobs:
           echo ${{join(steps.generate_version.outputs.*, '\n')}}
           echo "version_tag = ${{ steps.generate_version.outputs.version_tag }}"
           echo "version = ${{ steps.generate_version.outputs.version }}"
-          echo ${{ steps.generate_version.outputs.version_tag }} > .version.txt
+          echo ${{ steps.generate_version.outputs.version }} > .version.txt
       - name: Upload version
         uses: actions/upload-artifact@v2
         with:
