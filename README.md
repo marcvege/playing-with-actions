@@ -11,4 +11,5 @@ Project to testing github actions
 * [Commit tagger](https://github.com/marketplace/actions/commit-tagger)
 
 ## Pending to review 
-- [ ] [Sharing workflows with your organization](https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/sharing-workflows-with-your-organization)
+- [X] [Sharing workflows with your organization](https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/sharing-workflows-with-your-organization)
+
