@@ -70,7 +70,16 @@ jobs:
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           tag: "${{ steps.get_version.outputs.VERSION }}"
-      - uses: actions/upload-artifact@v2
-        with:
-          name: playing-with-actions-app.${{ steps.get_version.outputs.version }}
-          path: app/build/libs
+      - run:
+          echo "executin ls ."
+          ls .
+          echo "executin ls app"
+          ls app
+          echo "executin ls app/build/libs"
+          ls app/build/libs
+#      - name: Run application
+#            run: java -jar playing-with-actions-app.${{ github.event.intpus.version }}.jar
+#      - uses: actions/upload-artifact@v2
+#        with:
+#          name: playing-with-actions-app.${{ steps.get_version.outputs.version }}
+#          path: app/build/libs
